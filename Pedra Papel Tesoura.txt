@@ -1,0 +1,57 @@
+const int pinoPedra = 2;
+const int pinoPapel = 3;
+const int pinoTesoura = 4;
+
+const int ledVitoria = 8;
+const int ledEmpate  = 9;
+const int ledDerrota = 10;
+
+void setup() {
+  pinMode(pinoPedra, INPUT_PULLUP);
+  pinMode(pinoPapel, INPUT_PULLUP);
+  pinMode(pinoTesoura, INPUT_PULLUP);
+
+  pinMode(ledVitoria, OUTPUT);
+  pinMode(ledEmpate, OUTPUT);
+  pinMode(ledDerrota, OUTPUT);
+
+  Serial.begin(9600);
+  randomSeed(analogRead(0)); // Semente aleatória para o sorteio
+  Serial.println("Jokenpo iniciado! Escolha: Pedra (2), Papel (3) ou Tesoura (4)");
+}
+
+void loop() {
+  int minhaEscolha = 0; // 1: Pedra, 2: Papel, 3: Tesoura
+
+  if (digitalRead(pinoPedra) == LOW) { minhaEscolha = 1; delay(300); }
+  else if (digitalRead(pinoPapel) == LOW) { minhaEscolha = 2; delay(300); }
+  else if (digitalRead(pinoTesoura) == LOW) { minhaEscolha = 3; delay(300); }
+
+  if (minhaEscolha != 0) {
+    int escolhaArduino = random(1, 4); // Sorta 1, 2 ou 3
+
+    digitalWrite(ledVitoria, LOW);
+    digitalWrite(ledEmpate, LOW);
+    digitalWrite(ledDerrota, LOW);
+
+    Serial.print("Sua escolha: ");
+    Serial.println(minhaEscolha);
+    Serial.print("Arduino escolheu: ");
+    Serial.println(escolhaArduino);
+
+    if (minhaEscolha == escolhaArduino) {
+      Serial.println("Empate!");
+      digitalWrite(ledEmpate, HIGH);
+    } else if ((minhaEscolha == 1 && escolhaArduino == 3) ||
+               (minhaEscolha == 2 && escolhaArduino == 1) ||
+               (minhaEscolha == 3 && escolhaArduino == 2)) {
+      Serial.println("Voce venceu!");
+      digitalWrite(ledVitoria, HIGH);
+    } else {
+      Serial.println("Arduino venceu!");
+      digitalWrite(ledDerrota, HIGH);
+    }
+    Serial.println("----------------u-------------");
+    delay(2000);
+  }
+}
